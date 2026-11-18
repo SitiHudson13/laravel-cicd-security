@@ -1,0 +1,39 @@
+%% Instructor reference answer for Deliverable A (render with Mermaid / diagrams.net)
+flowchart LR
+    subgraph TB1["Trust boundary 1: Internet / untrusted"]
+        U["User / Browser<br/>(Alpha or Beta member/admin)"]
+    end
+
+    subgraph TB2["Trust boundary 2: Laravel application"]
+        R["Routes<br/>web.php / api.php"]
+        MW["Middleware<br/>auth, guest, org.admin"]
+        C["Controllers<br/>Project, Document, Team"]
+        FR["Form Requests<br/>(validation)"]
+        P["Policies<br/>ProjectPolicy, DocumentPolicy"]
+    end
+
+    subgraph TB3["Trust boundary 3: Data tier"]
+        DB[("Database<br/>users, organizations,<br/>projects, documents")]
+        FS[("Document storage<br/>storage/app/private/documents")]
+        SS[("Session store")]
+    end
+
+    subgraph ISO["Tenant isolation"]
+        A["Organization A (Alpha) data"]
+        B["Organization B (Beta) data"]
+    end
+
+    U -- "login, project ID, search q, file upload, download ID" --> R
+    R --> MW --> C
+    C --> FR
+    C -. "authorize() - MUST enforce org ownership" .-> P
+    C -- "queries (parameterized?)" --> DB
+    C -- "store / read files (authorized?)" --> FS
+    C --> SS
+    DB --> A
+    DB --> B
+    FS --> A
+    FS --> B
+
+    classDef risk fill:#fde8e8,stroke:#b42318;
+    class C,FS risk;
