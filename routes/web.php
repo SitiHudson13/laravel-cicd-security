@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     // Documents
     Route::post('/projects/{id}/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/projects/{project}/documents/{document}', [DocumentController::class, 'downloadNested'])
+        ->name('projects.documents.download');
 
     // Organization administration
     Route::middleware('org.admin')->group(function () {

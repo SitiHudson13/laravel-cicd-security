@@ -51,4 +51,18 @@ class DocumentController extends Controller
 
         return Storage::disk('local')->download($document->path, $document->original_name);
     }
+
+    /**
+     * LAB 2 (Activity 5): nested URL /projects/{project}/documents/{document}.
+     * The parent project is tenant-checked, but is the document really a child of that project?
+     */
+    public function downloadNested(Request $request, $project, $document)
+    {
+        $projectRecord = Project::findOrFail($project);
+        abort_unless($projectRecord->organization_id === $request->user()->organization_id, 404);
+
+        $file = Document::findOrFail($document);
+
+        return Storage::disk('local')->download($file->path, $file->original_name);
+    }
 }

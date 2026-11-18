@@ -13,6 +13,15 @@ WORKDIR /var/www/html
 # Fresh Laravel skeleton (pinned major version for a reproducible lab)
 RUN composer create-project laravel/laravel:^12.0 . --prefer-dist --no-interaction
 
+# Lab 2: Pest for automated security tests (pinned to the PHPUnit 11 line used by Laravel 12)
+RUN composer config --no-plugins allow-plugins.pestphp/pest-plugin true \
+    && composer require --dev pestphp/pest:^3.8 pestphp/pest-plugin-laravel:^3.2 \
+        --with-all-dependencies --no-interaction
+
+# The skeleton ships its own users migration and example tests that clash with the lab code
+RUN rm -f database/migrations/0001_01_01_000000_create_users_table.php \
+          tests/Feature/ExampleTest.php tests/Unit/ExampleTest.php
+
 # Overlay the SecureProject application code on top of the skeleton.
 # (docker-compose.yml also bind-mounts the editable folders so participants can inspect/edit them from the host.)
 COPY bootstrap/app.php bootstrap/app.php
@@ -21,6 +30,7 @@ COPY routes/ routes/
 COPY resources/views/ resources/views/
 COPY database/migrations/ database/migrations/
 COPY database/seeders/ database/seeders/
+COPY database/factories/ database/factories/
 COPY tests/ tests/
 COPY docker/env.lab .env.lab
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh

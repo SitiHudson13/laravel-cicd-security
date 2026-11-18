@@ -26,7 +26,7 @@
                 <td>{{ $document->id }}</td>
                 <td>{{ $document->original_name }}</td>
                 <td>{{ $document->size }} bytes</td>
-                <td><a href="{{ route('documents.download', $document->id) }}">Download</a></td>
+                <td><a href="{{ route('projects.documents.download', [$project->id, $document->id]) }}">Download</a></td>
             </tr>
         @empty
             <tr><td colspan="4" class="muted">No documents.</td></tr>

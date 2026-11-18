@@ -11,6 +11,7 @@ services:
       - ./resources/views:/var/www/html/resources/views
       - ./database/migrations:/var/www/html/database/migrations
       - ./database/seeders:/var/www/html/database/seeders
+      - ./database/factories:/var/www/html/database/factories
       - ./tests:/var/www/html/tests
       - ./solutions:/var/www/html/solutions
     # Bound to localhost only: this application is intentionally vulnerable.
