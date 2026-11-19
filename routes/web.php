@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectSearchController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,11 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/projects/search', [ProjectController::class, 'search'])->name('projects.search');
+    Route::get('/projects/search', [ProjectSearchController::class, 'search'])->name('projects.search');
     Route::get('/projects/{id}', [ProjectController::class, 'show'])->name('projects.show');
     Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    // Comments (Lab 3)
+    Route::post('/projects/{project}/comments', [CommentController::class, 'store'])->name('projects.comments.store');
 
     // Documents
     Route::post('/projects/{id}/documents', [DocumentController::class, 'store'])->name('documents.store');

@@ -7,13 +7,11 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 /**
  * LAB 2 REFERENCE SOLUTION.
  * Pattern on every single-project action: (1) resolve inside the caller's tenant -> 404 for other
  * tenants, (2) authorize with the Policy -> 403 for insufficient permission inside the tenant.
- * search() also carries the Lab 1 fixes (parameterized query, generic error).
  */
 class ProjectController extends Controller
 {
@@ -54,7 +52,7 @@ class ProjectController extends Controller
 
     public function show(Request $request, $id)
     {
-        $project = $this->tenantProject($request, $id, ['documents', 'organization']);
+        $project = $this->tenantProject($request, $id, ['documents', 'organization', 'comments.user']);
         $this->authorize('view', $project);
 
         return view('projects.show', compact('project'));
@@ -86,23 +84,5 @@ class ProjectController extends Controller
         $record->delete();
 
         return redirect()->route('projects.index')->with('status', 'Project deleted.');
-    }
-
-    public function search(Request $request)
-    {
-        $q = (string) $request->query('q', '');
-
-        try {
-            $results = Project::query()
-                ->where('organization_id', $request->user()->organization_id)
-                ->where('name', 'like', '%'.$q.'%')
-                ->get(['id', 'name', 'description']);
-        } catch (\Throwable $e) {
-            Log::error('Project search failed', ['exception' => $e]);
-
-            return response('Search is temporarily unavailable.', 500);
-        }
-
-        return view('projects.search', ['results' => $results, 'q' => $q]);
     }
 }

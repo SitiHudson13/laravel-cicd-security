@@ -60,6 +60,10 @@ class DatabaseSeeder extends Seeder
 
             $this->createDocument($project, $created[$creatorEmail], $org->name);
         }
+        Project::where('name', 'Alpha Website Redesign')->firstOrFail()->comments()->create([
+            'user_id' => $created['staff.alpha@example.test']->id,
+            'content' => 'Project meeting scheduled for Monday.',
+        ]);
     }
 
     private function createDocument(Project $project, User $uploader, string $orgName): void

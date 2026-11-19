@@ -41,4 +41,23 @@
         <button class="primary" type="submit">Upload</button>
     </form>
 </div>
+
+<div class="card">
+    <h3>Comments</h3>
+    @forelse($project->comments as $comment)
+        <div class="comment" style="border-bottom:1px solid #e4e7eb;padding:8px 0">
+            <div class="muted">{{ $comment->user->name }} · {{ $comment->created_at }}</div>
+            {!! $comment->content !!}
+        </div>
+    @empty
+        <p class="muted">No comments yet.</p>
+    @endforelse
+
+    <h4>Add a comment</h4>
+    <form method="POST" action="{{ route('projects.comments.store', $project->id) }}">
+        @csrf
+        <textarea name="content" rows="3"></textarea>
+        <button class="primary" type="submit">Post comment</button>
+    </form>
+</div>
 @endsection
