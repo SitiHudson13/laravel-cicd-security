@@ -2,31 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /**
- * LAB 3 (intentionally vulnerable): unsafe SQL string construction and raw error disclosure.
+ * LAB 3 REFERENCE SOLUTION: validated input, Query Builder (bound parameter), tenant constraint kept.
+ * Note: % and _ remain LIKE wildcards in the keyword; escape them if literal matching is required.
  */
 class ProjectSearchController extends Controller
 {
     public function search(Request $request)
     {
-        $keyword = $request->input('q', '');
-        $orgId = $request->user()->organization_id;
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+        ]);
 
-        try {
-            $projects = DB::select(
-                "SELECT * FROM projects WHERE organization_id = {$orgId} AND name LIKE '%{$keyword}%' ORDER BY id"
-            );
-        } catch (\Throwable $e) {
-            return response(
-                "Search failed.\n\nException: ".get_class($e)."\nMessage: ".$e->getMessage()
-                ."\nFile: ".$e->getFile().':'.$e->getLine(),
-                500,
-                ['Content-Type' => 'text/plain']
-            );
-        }
+        $keyword = $validated['q'] ?? '';
+
+        $projects = Project::query()
+            ->where('organization_id', $request->user()->organization_id)
+            ->where('name', 'like', "%{$keyword}%")
+            ->orderBy('id')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('projects.search', [
             'projects' => $projects,
