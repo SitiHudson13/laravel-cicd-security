@@ -6,6 +6,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * LAB 4 (intentionally insecure starting point). Inspect, then harden:
+ *  - no session ID regeneration after a successful login (session fixation)
+ *  - logout does not invalidate the session or rotate the CSRF token
+ *  - no rate limiting on repeated failed logins
+ */
 class AuthController extends Controller
 {
     public function showLogin()
@@ -24,16 +30,12 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Invalid credentials.'])->onlyInput('email');
         }
 
-        $request->session()->regenerate();
-
         return redirect()->intended(route('projects.index'));
     }
 
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
 
         return redirect()->route('login');
     }

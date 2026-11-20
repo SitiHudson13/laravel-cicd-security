@@ -13,10 +13,18 @@ Route::redirect('/', '/projects');
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+
+    // Lab 4: pages linked from the password-reset notification (the POST handlers are built in Part D).
+    Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
+    Route::get('/reset-password/{token}', fn (string $token) => view('auth.reset-password', [
+        'token' => $token,
+        'email' => request('email'),
+    ]))->name('password.reset');
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', fn () => redirect()->route('projects.index'))->name('dashboard');
 
     // Projects
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');

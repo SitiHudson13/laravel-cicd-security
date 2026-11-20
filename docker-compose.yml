@@ -13,5 +13,11 @@ services:
       - ./database/seeders:/var/www/html/database/seeders
       - ./database/factories:/var/www/html/database/factories
       - ./tests:/var/www/html/tests
+      # Lab 4: session/auth config, middleware registration, test config and environment (edit on the host)
+      - ./config/auth.php:/var/www/html/config/auth.php
+      - ./config/session.php:/var/www/html/config/session.php
+      - ./bootstrap/app.php:/var/www/html/bootstrap/app.php
+      - ./phpunit.xml:/var/www/html/phpunit.xml
+      - ./docker/env.lab:/var/www/html/.env.lab
       - ./solutions:/var/www/html/solutions
     # Bound to localhost only: this application is intentionally vulnerable.

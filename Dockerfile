@@ -18,6 +18,9 @@ RUN composer config --no-plugins allow-plugins.pestphp/pest-plugin true \
     && composer require --dev pestphp/pest:^3.8 pestphp/pest-plugin-laravel:^3.2 \
         --with-all-dependencies --no-interaction
 
+# Lab 4: Laravel Sanctum (personal access tokens). Its migration is shipped in database/migrations.
+RUN composer require laravel/sanctum:^4.0 --no-interaction
+
 # The skeleton ships its own users migration and example tests that clash with the lab code
 RUN rm -f database/migrations/0001_01_01_000000_create_users_table.php \
           tests/Feature/ExampleTest.php tests/Unit/ExampleTest.php
@@ -25,6 +28,8 @@ RUN rm -f database/migrations/0001_01_01_000000_create_users_table.php \
 # Overlay the SecureProject application code on top of the skeleton.
 # (docker-compose.yml also bind-mounts the editable folders so participants can inspect/edit them from the host.)
 COPY bootstrap/app.php bootstrap/app.php
+COPY config/ config/
+COPY phpunit.xml phpunit.xml
 COPY app/ app/
 COPY routes/ routes/
 COPY resources/views/ resources/views/
