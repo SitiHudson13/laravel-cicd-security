@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectDocumentController;
 use App\Http\Controllers\ProjectSearchController;
@@ -12,6 +13,11 @@ use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/projects');
+
+// Lab 5 Part F: CSP nonce demo (public)
+Route::get('/security-demo', function () {
+    return view('security-demo');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -55,6 +61,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/project-documents/{id}/download', [ProjectDocumentController::class, 'download'])->name('project-documents.download');
     Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'downloadNested'])
         ->name('projects.documents.download');
+
+    // Lab 5: secure upload pipeline (quarantine -> scan -> authorized download)
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 
     // Organization administration
     Route::middleware('org.admin')->group(function () {

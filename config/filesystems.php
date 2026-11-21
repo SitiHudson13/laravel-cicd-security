@@ -18,6 +18,14 @@ return [
             'report' => false,
         ],
 
+        // Lab 5 Part C: private disk for uploaded documents. Never link this into public/.
+        'secure_documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/secure-documents'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
