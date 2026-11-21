@@ -9,6 +9,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectDocumentController;
 use App\Http\Controllers\ProjectSearchController;
+use App\Http\Controllers\SecureFetchController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +66,9 @@ Route::middleware('auth')->group(function () {
     // Lab 5: secure upload pipeline (quarantine -> scan -> authorized download)
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+
+    // Lab 6: SSRF-safe outbound fetcher (session-authenticated, CSRF-protected)
+    Route::post('/integrations/fetch', [SecureFetchController::class, 'fetch']);
 
     // Organization administration
     Route::middleware('org.admin')->group(function () {

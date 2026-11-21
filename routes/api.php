@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ProjectApiController;
+use App\Http\Controllers\WebhookController;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,3 +30,12 @@ Route::middleware(['auth:sanctum', 'abilities:products:write'])->post('/secure-p
 // SEC-14: ability + tenant ownership (Policy).
 Route::middleware(['auth:sanctum', 'abilities:products:read'])
     ->get('/projects/{id}', [ProjectApiController::class, 'show']);
+
+// Lab 6 Parts D/E: HMAC-verified webhook with replay protection (no session or CSRF; the signature is the credential).
+Route::post('/webhooks/training', [
+    WebhookController::class,
+    'receive',
+])->middleware([
+    'verified.webhook',
+    'webhook.replay',
+]);

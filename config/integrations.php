@@ -1,6 +1,19 @@
 <?php
 
-// Lab 6 Part B2: replace this stub with the integration settings from the lab text
-// (fetcher allowlist/timeouts/size limit and webhook secret/tolerance).
-// This file is bind-mounted into the container, so edit it on your host.
-return [];
+return [
+    'fetcher' => [
+        'allowed_hosts' => array_filter(
+            array_map(
+                'trim',
+                explode(',', env('FETCH_ALLOWED_HOSTS', ''))
+            )
+        ),
+        'connect_timeout' => 3,
+        'timeout' => 8,
+        'max_response_bytes' => 1048576,
+    ],
+    'webhook' => [
+        'secret' => env('WEBHOOK_SHARED_SECRET'),
+        'tolerance_seconds' => 300,
+    ],
+];
