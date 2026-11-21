@@ -2,8 +2,9 @@ FROM php:8.3-cli
 
 # System packages + PHP extensions needed by Laravel (SQLite keeps the lab to a single container)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git unzip libzip-dev libsqlite3-dev libonig-dev \
-    && docker-php-ext-install pdo_sqlite zip mbstring \
+        git unzip libzip-dev libsqlite3-dev libonig-dev libpng-dev libjpeg-dev \
+    && docker-php-ext-configure gd --with-jpeg \
+    && docker-php-ext-install pdo_sqlite zip mbstring gd \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -29,6 +30,9 @@ RUN rm -f database/migrations/0001_01_01_000000_create_users_table.php \
 # (docker-compose.yml also bind-mounts the editable folders so participants can inspect/edit them from the host.)
 COPY bootstrap/app.php bootstrap/app.php
 COPY config/ config/
+COPY public/css/ public/css/
+COPY public/js/ public/js/
+COPY docker/php/lab5.ini /usr/local/etc/php/conf.d/zz-lab5.ini
 COPY phpunit.xml phpunit.xml
 COPY app/ app/
 COPY routes/ routes/

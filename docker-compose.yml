@@ -18,6 +18,11 @@ services:
       - ./config/session.php:/var/www/html/config/session.php
       - ./bootstrap/app.php:/var/www/html/bootstrap/app.php
       - ./phpunit.xml:/var/www/html/phpunit.xml
+      # Lab 5: filesystem disks, PHP upload limits and static assets (edit on the host)
+      - ./config/filesystems.php:/var/www/html/config/filesystems.php
+      - ./docker/php/lab5.ini:/usr/local/etc/php/conf.d/zz-lab5.ini
+      - ./public/css:/var/www/html/public/css
+      - ./public/js:/var/www/html/public/js
       - ./docker/env.lab:/var/www/html/.env.lab
       - ./solutions:/var/www/html/solutions
     # Bound to localhost only: this application is intentionally vulnerable.

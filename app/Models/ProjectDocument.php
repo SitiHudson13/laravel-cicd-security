@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Document extends Model
+class ProjectDocument extends Model
 {
+    protected $table = 'project_documents';
+
     use HasFactory;
 
     protected $fillable = ['project_id', 'original_name', 'path', 'mime_type', 'size', 'uploaded_by'];

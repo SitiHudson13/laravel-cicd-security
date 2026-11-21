@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card" style="max-width:420px;margin:40px auto">
+<div class="card narrow">
     <h2>Forgot password</h2>
     <form method="POST" action="{{ url('/forgot-password') }}">
         @csrf

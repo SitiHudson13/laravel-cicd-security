@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Document;
+use App\Models\ProjectDocument;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/** @extends Factory<Document> */
-class DocumentFactory extends Factory
+/** @extends Factory<ProjectDocument> */
+class ProjectDocumentFactory extends Factory
 {
-    protected $model = Document::class;
+    protected $model = ProjectDocument::class;
 
     public function definition(): array
     {

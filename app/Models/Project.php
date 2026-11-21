@@ -20,7 +20,7 @@ class Project extends Model
 
     public function documents(): HasMany
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(ProjectDocument::class);
     }
 
     public function comments(): HasMany

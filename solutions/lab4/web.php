@@ -5,8 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectDocumentController;
 use App\Http\Controllers\ProjectSearchController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
@@ -51,9 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/projects/{project}/comments', [CommentController::class, 'store'])->name('projects.comments.store');
 
     // Documents
-    Route::post('/projects/{id}/documents', [DocumentController::class, 'store'])->name('documents.store');
-    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
-    Route::get('/projects/{project}/documents/{document}', [DocumentController::class, 'downloadNested'])
+    Route::post('/projects/{id}/documents', [ProjectDocumentController::class, 'store'])->name('project-documents.store');
+    Route::get('/project-documents/{id}/download', [ProjectDocumentController::class, 'download'])->name('project-documents.download');
+    Route::get('/projects/{project}/documents/{document}', [ProjectDocumentController::class, 'downloadNested'])
         ->name('projects.documents.download');
 
     // Organization administration

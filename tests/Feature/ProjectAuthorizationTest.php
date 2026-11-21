@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Document;
+use App\Models\ProjectDocument;
 use App\Models\Organization;
 use App\Models\Project;
 use App\Models\User;
@@ -37,9 +37,9 @@ beforeEach(function () {
     $this->betaDoc = makeDocument($this->betaProject, 'BETA-CONFIDENTIAL-DOCUMENT');
 });
 
-function makeDocument(Project $project, string $contents): Document
+function makeDocument(Project $project, string $contents): ProjectDocument
 {
-    $document = Document::factory()->create([
+    $document = ProjectDocument::factory()->create([
         'project_id' => $project->id,
         'path' => "documents/{$project->id}/".uniqid().'.txt',
     ]);
@@ -163,12 +163,12 @@ it('rejects documents addressed through another tenant project', function () {
 });
 
 it('rejects cross-tenant downloads on the legacy flat URL', function () {
-    $response = $this->actingAs($this->alice)->get(route('documents.download', $this->betaDoc));
+    $response = $this->actingAs($this->alice)->get(route('project-documents.download', $this->betaDoc));
 
     $response->assertNotFound();
     expect($response->getContent())->not->toContain('BETA-CONFIDENTIAL-DOCUMENT');
 });
 
 it('still serves same-tenant documents on the legacy flat URL', function () {
-    $this->actingAs($this->adam)->get(route('documents.download', $this->alphaDoc))->assertOk();
+    $this->actingAs($this->adam)->get(route('project-documents.download', $this->alphaDoc))->assertOk();
 });

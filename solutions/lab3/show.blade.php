@@ -7,8 +7,8 @@
     <p>{{ $project->description }}</p>
     <a class="btn" href="{{ route('projects.edit', $project->id) }}">Edit</a>
     @if(auth()->user()->isOrgAdmin())
-        <form method="POST" action="{{ route('projects.destroy', $project->id) }}" style="display:inline"
-              onsubmit="return confirm('Delete this project?')">
+        <form method="POST" action="{{ route('projects.destroy', $project->id) }}" class="inline"
+              data-confirm="Delete this project?">
             @csrf
             @method('DELETE')
             <button class="danger" type="submit">Delete</button>
@@ -45,7 +45,7 @@
 <div class="card">
     <h3>Comments</h3>
     @forelse($project->comments as $comment)
-        <div class="comment" style="border-bottom:1px solid #e4e7eb;padding:8px 0">
+        <div class="comment">
             <div class="muted">{{ $comment->user->name }} · {{ $comment->created_at }}</div>
             {!! nl2br(e($comment->content)) !!}
         </div>

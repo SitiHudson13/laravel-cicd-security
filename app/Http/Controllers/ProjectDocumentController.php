@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreDocumentRequest;
-use App\Models\Document;
+use App\Http\Requests\StoreProjectDocumentRequest;
+use App\Models\ProjectDocument;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Storage;
 /**
  * LAB 2 REFERENCE SOLUTION: parent project is resolved inside the tenant, the document is resolved
  * THROUGH that project (nested ownership), and both are authorized with Policies.
- * Requires StoreDocumentRequest (copied from solutions/ by scripts/apply-lab2-fixes.sh).
+ * Renamed in Lab 5 (was DocumentController) so the new Document pipeline can use that name.
  */
-class DocumentController extends Controller
+class ProjectDocumentController extends Controller
 {
-    public function store(StoreDocumentRequest $request, $projectId): RedirectResponse
+    public function store(StoreProjectDocumentRequest $request, $projectId): RedirectResponse
     {
         $project = Project::query()
             ->where('organization_id', $request->user()->organization_id)
@@ -25,7 +25,7 @@ class DocumentController extends Controller
         $file = $request->file('file');
         $path = $file->store("documents/{$project->id}", 'local');
 
-        Document::create([
+        ProjectDocument::create([
             'project_id' => $project->id,
             'original_name' => basename($file->getClientOriginalName()),
             'path' => $path,
@@ -37,10 +37,10 @@ class DocumentController extends Controller
         return redirect()->route('projects.show', $project->id)->with('status', 'Document uploaded.');
     }
 
-    /** Legacy flat URL: /documents/{id}/download — resolved only within the caller's tenant. */
+    /** Flat URL: /project-documents/{id}/download — resolved only within the caller's tenant. */
     public function download(Request $request, $id)
     {
-        $document = Document::query()
+        $document = ProjectDocument::query()
             ->with('project')
             ->whereHas('project', fn ($q) => $q->where('organization_id', $request->user()->organization_id))
             ->findOrFail($id);

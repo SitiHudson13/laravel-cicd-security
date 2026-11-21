@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Document;
+use App\Models\ProjectDocument;
 use App\Models\Organization;
 use App\Models\Project;
 use App\Models\User;
@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
 
         Storage::disk('local')->put($path, $contents);
 
-        Document::create([
+        ProjectDocument::create([
             'project_id' => $project->id,
             'original_name' => $filename,
             'path' => $path,

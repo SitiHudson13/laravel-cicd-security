@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * REFERENCE SOLUTION (instructor): server-side type and size restrictions (R03).
  */
-class StoreDocumentRequest extends FormRequest
+class StoreProjectDocumentRequest extends FormRequest
 {
     public function authorize(): bool
     {
