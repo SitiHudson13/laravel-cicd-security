@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ProjectApiController;
+use App\Http\Controllers\Api\VulnerableOrderController;
 use App\Http\Controllers\WebhookController;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -39,3 +40,10 @@ Route::post('/webhooks/training', [
     'verified.webhook',
     'webhook.replay',
 ]);
+
+// Lab 7 Part A5 (instructor-provided, INTENTIONALLY VULNERABLE): authenticated, but no authorization checks.
+Route::middleware('auth:sanctum')->prefix('lab-vulnerable')->group(function () {
+    Route::get('/orders/{id}', [VulnerableOrderController::class, 'show']);
+    Route::patch('/orders/{id}', [VulnerableOrderController::class, 'update']);
+    Route::post('/orders/{id}/process', [VulnerableOrderController::class, 'process']);
+});
