@@ -9,3 +9,6 @@ use Tests\TestCase;
 | never against the lab's seeded database file.
 */
 pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
+
+// Lab 6: unit tests use config() and the container, so they need the Laravel TestCase (no database refresh).
+pest()->extend(TestCase::class)->in('Unit');

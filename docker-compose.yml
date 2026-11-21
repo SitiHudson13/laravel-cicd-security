@@ -23,6 +23,9 @@ services:
       - ./docker/php/lab5.ini:/usr/local/etc/php/conf.d/zz-lab5.ini
       - ./public/css:/var/www/html/public/css
       - ./public/js:/var/www/html/public/js
+      # Lab 6: integration settings (SSRF fetcher / webhooks) and the local "internal" test service
+      - ./config/integrations.php:/var/www/html/config/integrations.php
+      - ./ssrf-test-service:/var/www/html/ssrf-test-service
       - ./docker/env.lab:/var/www/html/.env.lab
       - ./solutions:/var/www/html/solutions
     # Bound to localhost only: this application is intentionally vulnerable.
