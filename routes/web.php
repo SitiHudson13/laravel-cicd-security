@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\TokenController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProjectController;
@@ -12,7 +15,9 @@ Route::redirect('/', '/projects');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+    Route::post('/forgot-password', [PasswordResetController::class, 'requestReset'])->name('password.email');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 
     // Lab 4: pages linked from the password-reset notification (the POST handlers are built in Part D).
     Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
@@ -23,8 +28,14 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/dashboard', fn () => redirect()->route('projects.index'))->name('dashboard');
+
+    // API token management (session-authenticated, CSRF-protected)
+    Route::post('/settings/api-tokens', [TokenController::class, 'store']);
+    Route::get('/settings/api-tokens', [TokenController::class, 'index']);
+    Route::delete('/settings/api-tokens', [TokenController::class, 'revokeAll']);
+    Route::delete('/settings/api-tokens/{tokenId}', [TokenController::class, 'destroy']);
 
     // Projects
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
