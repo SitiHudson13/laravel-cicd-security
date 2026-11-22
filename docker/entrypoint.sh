@@ -16,6 +16,11 @@ else
 fi
 php artisan config:clear >/dev/null 2>&1 || true
 
+# Lab 8: composer.json / composer.lock are mounted from the repository. Sync vendor/ with the lock
+# (a no-op when already in sync). Locked versions with advisories are installed as-is; auditing is a lab step.
+composer install --no-interaction --no-progress \
+    || echo "WARNING: composer install failed (offline?). vendor/ may not match composer.lock."
+
 mkdir -p database storage/app/private storage/framework/{cache,sessions,views} storage/logs
 touch database/database.sqlite
 
