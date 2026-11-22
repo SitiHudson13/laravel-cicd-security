@@ -101,6 +101,9 @@ test('revoking through the endpoint blocks the bearer token', function () {
         ->deleteJson('/settings/api-tokens/'.$created->accessToken->id)
         ->assertNoContent();
 
+    // actingAs() above left a signed-in web user, and auth:sanctum falls back to the web guard; drop it so only the token is tested.
+    $this->app['auth']->forgetGuards();
+
     $this->withToken($created->plainTextToken)->getJson('/api/secure-products')->assertUnauthorized();
 });
 

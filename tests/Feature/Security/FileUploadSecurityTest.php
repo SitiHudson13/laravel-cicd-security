@@ -103,10 +103,13 @@ test('a php payload disguised as an image is rejected', function () {
 });
 
 test('a disallowed extension is rejected even when the content is a real image', function () {
+    // Keep the fake image in a variable: its temp file is deleted as soon as the object is garbage-collected.
+    $image = UploadedFile::fake()->image('real.png');
+
     $this->actingAs($this->user)->post('/documents', [
         'document' => UploadedFile::fake()->createWithContent(
             'photo.php',
-            file_get_contents(UploadedFile::fake()->image('real.png')->getRealPath())
+            file_get_contents($image->getRealPath())
         ),
     ])->assertSessionHasErrors('document');
 
@@ -130,7 +133,8 @@ test('uploaded files are not reachable through a public url', function () {
 
     $document = Document::firstOrFail();
 
-    $this->get('/storage/secure-documents/'.$document->storage_path)->assertNotFound();
+    // Newer Laravel releases answer 403 (signed "storage/{path}" route) where older ones answered 404; both deny access.
+    expect($this->get('/storage/secure-documents/'.$document->storage_path)->status())->toBeIn([403, 404]);
     $this->get('/'.$document->storage_path)->assertNotFound();
 
     $disk = config('filesystems.disks.secure_documents');

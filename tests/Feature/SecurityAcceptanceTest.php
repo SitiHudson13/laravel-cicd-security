@@ -164,9 +164,9 @@ class SecurityAcceptanceTest extends TestCase
     {
         $beta = $this->betaProject();
 
-        $this->actingAs($this->user('admin.alpha@example.test'))
-            ->delete('/projects/'.$beta->id)
-            ->assertForbidden();
+        $this->assertDenied(
+            $this->actingAs($this->user('admin.alpha@example.test'))->delete('/projects/'.$beta->id)
+        );
 
         $this->assertDatabaseHas('projects', ['id' => $beta->id]);
     }
