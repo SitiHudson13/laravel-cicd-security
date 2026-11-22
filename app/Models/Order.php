@@ -12,16 +12,10 @@ class Order extends Model
 {
     use HasFactory;
 
-    // LAB 7 (Part A3): deliberately over-permissive. Part C3 restricts this to ['description'].
+    // Only customer-editable fields are mass assignable. Server-controlled fields (user_id, total_cents,
+    // status, payment_reference, internal_notes, processed_at) are assigned explicitly in trusted code.
     protected $fillable = [
-        'user_id',
-        'reference',
         'description',
-        'total_cents',
-        'status',
-        'payment_reference',
-        'internal_notes',
-        'processed_at',
     ];
 
     protected function casts(): array

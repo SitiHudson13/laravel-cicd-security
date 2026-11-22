@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\ProjectApiController;
-use App\Http\Controllers\Api\VulnerableOrderController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OrderProcessingController;
 use App\Http\Controllers\WebhookController;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -41,9 +42,17 @@ Route::post('/webhooks/training', [
     'webhook.replay',
 ]);
 
-// Lab 7 Part A5 (instructor-provided, INTENTIONALLY VULNERABLE): authenticated, but no authorization checks.
-Route::middleware('auth:sanctum')->prefix('lab-vulnerable')->group(function () {
-    Route::get('/orders/{id}', [VulnerableOrderController::class, 'show']);
-    Route::patch('/orders/{id}', [VulnerableOrderController::class, 'update']);
-    Route::post('/orders/{id}/process', [VulnerableOrderController::class, 'process']);
+// Lab 7: secured order API (the intentionally vulnerable /api/lab-vulnerable/* routes are removed).
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])
+        ->middleware('throttle:orders-read');
+
+    Route::get('/orders/{order}', [OrderController::class, 'show'])
+        ->middleware('throttle:orders-read');
+
+    Route::patch('/orders/{order}', [OrderController::class, 'update'])
+        ->middleware('throttle:orders-update');
+
+    Route::post('/orders/{order}/process', [OrderProcessingController::class, 'store'])
+        ->middleware('throttle:orders-process');
 });
