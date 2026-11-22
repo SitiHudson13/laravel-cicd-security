@@ -7,7 +7,8 @@ return [
     | Third Party Services
     |--------------------------------------------------------------------------
     |
-    | Credentials for third party services.
+    | Credentials for third party services. Never hard-code a secret here:
+    | read it from the environment (.env, which is not committed).
     |
     */
 
@@ -33,10 +34,8 @@ return [
     ],
 
     'payment_gateway' => [
-        'base_url' => 'https://sandbox.payments.example.test',
-        // LAB 8 TRAINING FIXTURE: fictional key, not a real credential. It is intentionally committed
-        // here so participants can find it with Gitleaks and learn why deleting it later is not enough.
-        'api_key' => 'Zq8vN3kT7xLp2WmR9cYb5HdJ4sUf6GaE',
+        'base_url' => env('PAYMENT_GATEWAY_URL', 'https://sandbox.payments.example.test'),
+        'api_key' => env('PAYMENT_GATEWAY_API_KEY'),
     ],
 
 ];
